@@ -24,13 +24,13 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
     ""name"": ""PlayerInputSystem"",
     ""maps"": [
         {
-            ""name"": ""Movement"",
-            ""id"": ""e1cbe48d-dd33-4b8c-9c51-e94f238519e1"",
+            ""name"": ""CharacterControls"",
+            ""id"": ""ba0669e1-b5d3-4a7b-8345-99015515afe2"",
             ""actions"": [
                 {
                     ""name"": ""Walk"",
                     ""type"": ""Value"",
-                    ""id"": ""7ddb22a0-84d8-4ffa-a2ab-a581e46099c3"",
+                    ""id"": ""ee05c469-ca90-4c34-8e11-0301fcb74e9b"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -39,17 +39,26 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Run"",
                     ""type"": ""Button"",
-                    ""id"": ""20a08bbb-fbf6-4cc8-b37a-4e4a04d155f9"",
+                    ""id"": ""6f5f2353-9ec8-47b2-bd8d-bbb36ba4cd2b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""bcab795c-3d9e-4a43-9abe-4537450743cd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": ""Keyboard"",
-                    ""id"": ""da2943ca-386b-4135-826f-cd2fd8d51a41"",
+                    ""id"": ""96d71b17-034d-47a7-979a-0bd8fe5855ba"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -60,7 +69,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""558161c5-f231-48be-b819-e57c47f27fc8"",
+                    ""id"": ""5db1f924-7b14-40c1-a07b-678da13119b1"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -71,7 +80,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""46f643e4-7026-4211-9fc8-ef6e96376ad0"",
+                    ""id"": ""b54de1ca-ac9e-4393-be11-c9e8edc33e9e"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -82,7 +91,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""29644eef-88bb-4f62-b9a9-057b43b0cc7d"",
+                    ""id"": ""e25110d6-682d-4dbe-9709-e83cd929f8dc"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -93,7 +102,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""731239fd-fb3f-4cf6-a193-2f7eafd01b8d"",
+                    ""id"": ""a7c3b7f5-3993-4b8c-aabe-e21773676c5a"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -104,12 +113,23 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3acaf082-8e5f-4402-a074-c0daa70dceef"",
+                    ""id"": ""20ecb4e7-5d38-447a-b575-a13e08ef55d0"",
                     ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f392e6a0-739a-4804-bd39-be4b7fd84168"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -118,10 +138,11 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // Movement
-        m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
-        m_Movement_Walk = m_Movement.FindAction("Walk", throwIfNotFound: true);
-        m_Movement_Run = m_Movement.FindAction("Run", throwIfNotFound: true);
+        // CharacterControls
+        m_CharacterControls = asset.FindActionMap("CharacterControls", throwIfNotFound: true);
+        m_CharacterControls_Walk = m_CharacterControls.FindAction("Walk", throwIfNotFound: true);
+        m_CharacterControls_Run = m_CharacterControls.FindAction("Run", throwIfNotFound: true);
+        m_CharacterControls_Dash = m_CharacterControls.FindAction("Dash", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -178,34 +199,39 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Movement
-    private readonly InputActionMap m_Movement;
-    private IMovementActions m_MovementActionsCallbackInterface;
-    private readonly InputAction m_Movement_Walk;
-    private readonly InputAction m_Movement_Run;
-    public struct MovementActions
+    // CharacterControls
+    private readonly InputActionMap m_CharacterControls;
+    private ICharacterControlsActions m_CharacterControlsActionsCallbackInterface;
+    private readonly InputAction m_CharacterControls_Walk;
+    private readonly InputAction m_CharacterControls_Run;
+    private readonly InputAction m_CharacterControls_Dash;
+    public struct CharacterControlsActions
     {
         private @PlayerInputSystem m_Wrapper;
-        public MovementActions(@PlayerInputSystem wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Walk => m_Wrapper.m_Movement_Walk;
-        public InputAction @Run => m_Wrapper.m_Movement_Run;
-        public InputActionMap Get() { return m_Wrapper.m_Movement; }
+        public CharacterControlsActions(@PlayerInputSystem wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Walk => m_Wrapper.m_CharacterControls_Walk;
+        public InputAction @Run => m_Wrapper.m_CharacterControls_Run;
+        public InputAction @Dash => m_Wrapper.m_CharacterControls_Dash;
+        public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MovementActions set) { return set.Get(); }
-        public void SetCallbacks(IMovementActions instance)
+        public static implicit operator InputActionMap(CharacterControlsActions set) { return set.Get(); }
+        public void SetCallbacks(ICharacterControlsActions instance)
         {
-            if (m_Wrapper.m_MovementActionsCallbackInterface != null)
+            if (m_Wrapper.m_CharacterControlsActionsCallbackInterface != null)
             {
-                @Walk.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnWalk;
-                @Walk.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnWalk;
-                @Walk.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnWalk;
-                @Run.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
-                @Run.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
-                @Run.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
+                @Walk.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
+                @Walk.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
+                @Walk.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
+                @Run.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnRun;
+                @Dash.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDash;
+                @Dash.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDash;
+                @Dash.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDash;
             }
-            m_Wrapper.m_MovementActionsCallbackInterface = instance;
+            m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Walk.started += instance.OnWalk;
@@ -214,13 +240,17 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
             }
         }
     }
-    public MovementActions @Movement => new MovementActions(this);
-    public interface IMovementActions
+    public CharacterControlsActions @CharacterControls => new CharacterControlsActions(this);
+    public interface ICharacterControlsActions
     {
         void OnWalk(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
     }
 }

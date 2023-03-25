@@ -13,19 +13,22 @@ public class Player : MonoBehaviour
     private Vector3 characterMovement;
     private Vector3 positionToLookAt;
     private bool isMoving;
-    //private bool isRunning;
     private float rotationVelocity = 5f;
+    private bool runPressed;
+    private float startVelocity = 2f;
+    private bool dashPressed;
 
     [SerializeField] private float velocity;
     [SerializeField] private float velocityRunning;
+    [SerializeField] private float dashForce;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
-
     }
+
 
     void Update()
     {
@@ -37,6 +40,15 @@ public class Player : MonoBehaviour
     void SetMovement()
     {
         characterController.Move(characterMovement * velocity * Time.deltaTime);
+
+        if (runPressed)
+        {
+            velocity = velocityRunning;
+        }
+        if (!runPressed)
+        {
+            velocity = startVelocity;
+        }
     }
     
 
@@ -50,6 +62,21 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("isMoving", false);
         }
+        if((isMoving && runPressed) && !animator.GetBool("isRunning"))
+        {
+            animator.SetBool("isRunning", true);
+        }
+        if ((isMoving && !runPressed) && animator.GetBool("isRunning"))
+        {
+            animator.SetBool("isRunning", false);
+        }
+        if((!isMoving && runPressed) && animator.GetBool("isRunning"))
+        {
+            animator.SetBool("isMoving", false);
+            animator.SetBool("isRunning", false);
+        }
+
+        
     }
     
     void PlayerRotationHandler()
@@ -72,12 +99,18 @@ public class Player : MonoBehaviour
         isMoving = characterMovementInput.x != 0 || characterMovementInput.y != 0;
     }
 
-    public void SetRunning()
+    public void SetRunning(InputAction.CallbackContext context)
     {
-        if (isMoving)
-        {
-            characterController.Move(characterMovement * velocityRunning * Time.deltaTime);
-            //isRunning = true;
-        }
+        runPressed = context.ReadValueAsButton();
+    }
+
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable()
+    {
+        
     }
 }
